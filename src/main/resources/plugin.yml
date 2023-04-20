@@ -1,0 +1,8 @@
+name: FancyReferrals
+main: de.oliver.fancyreferrals.FancyReferrals
+author: OliverHD
+version: 1.0.0
+api-version: 1.19
+load: POSTWORLD
+commands:
+  FancyReferrals:
