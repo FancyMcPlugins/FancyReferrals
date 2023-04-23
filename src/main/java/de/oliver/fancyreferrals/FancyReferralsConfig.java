@@ -20,25 +20,17 @@ public class FancyReferralsConfig {
         FileConfiguration config = FancyReferrals.getInstance().getConfig();
 
         dbType = DatabaseType.getByIdentifier((String) getOrDefault(config, "database.type", "sqlite"));
-        if(dbType != null){
-            switch (dbType){
-                case MYSQL -> {
-                    dbHost = (String) getOrDefault(config, "database.host", "localhost");
-                    dbPort = (String) getOrDefault(config, "database.port", "3306");
-                    dbDatabase = (String) getOrDefault(config, "database.database", "fancyreferrals");
-                    dbUsername = (String) getOrDefault(config, "database.username", "root");
-                    dbPassword = (String) getOrDefault(config, "database.password", "");
-                }
-
-                case SQLITE -> {
-                    dbFile = (String) getOrDefault(config, "database.file_path", "database.db");
-                    dbFile = "plugins/FancyReferrals/" + dbFile;
-                }
-            }
-        } else {
+        if(dbType == null){
             FancyReferrals.getInstance().getLogger().warning("Invalid database type provided in config");
         }
 
+        dbHost = (String) getOrDefault(config, "database.mysql.host", "localhost");
+        dbPort = (String) getOrDefault(config, "database.mysql.port", "3306");
+        dbDatabase = (String) getOrDefault(config, "database.mysql.database", "fancyreferrals");
+        dbUsername = (String) getOrDefault(config, "database.mysql.username", "root");
+        dbPassword = (String) getOrDefault(config, "database.mysql.password", "");
+        dbFile = (String) getOrDefault(config, "database.sqlite.file_path", "database.db");
+        dbFile = "plugins/FancyReferrals/" + dbFile;
 
         FancyReferrals.getInstance().saveConfig();
     }
