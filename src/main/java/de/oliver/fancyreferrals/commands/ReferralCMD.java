@@ -1,15 +1,43 @@
 package de.oliver.fancyreferrals.commands;
 
 import de.oliver.fancylib.MessageHelper;
+import de.oliver.fancylib.databases.Database;
+import de.oliver.fancyreferrals.FancyReferrals;
 import de.oliver.fancyreferrals.ReferralManager;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ReferralCMD implements CommandExecutor {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+public class ReferralCMD implements CommandExecutor, TabCompleter {
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if(args.length == 1){
+            return Stream.concat(
+                    Stream.of("top"),
+                    Bukkit.getOnlinePlayers()
+                            .stream()
+                            .map(Player::getName))
+                    .filter(input -> input.startsWith(args[0]))
+                    .toList();
+        }
+
+        return null;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -19,11 +47,35 @@ public class ReferralCMD implements CommandExecutor {
         }
 
         if(args.length < 1){
-            MessageHelper.error(sender, "Correct usage: /Referral <player>");
+            MessageHelper.error(sender, "Correct usage: /Referral <player | top>");
             return false;
         }
 
-        Player t = Bukkit.getPlayer(args[0]);
+        if(args[0].equalsIgnoreCase("top")){
+            Database database = FancyReferrals.getInstance().getDatabase();
+            ResultSet res = database.executeQuery("SELECT referred, COUNT(*) as count FROM referrals ORDER BY count DESC LIMIT 10");
+            if(res == null){
+                MessageHelper.error(p, "Could not fetch data");
+                return false;
+            }
+
+            try {
+                int i = 0;
+                while (res.next()) {
+                    i++;
+                    UUID uuid = UUID.fromString(res.getString("referred"));
+                    int count = res.getInt("count");
+                    MessageHelper.info(p, "#" + i + " - " + uuid.toString() + " (" + count + ")");
+                }
+            }catch (SQLException e){
+                MessageHelper.error(p, "Could not fetch data");
+                return false;
+            }
+
+            return true;
+        }
+
+        OfflinePlayer t = Bukkit.getOfflinePlayer(args[0]);
         if(t == null){
             MessageHelper.error(p, "The player '" + args[0] + "' is not online");
             return false;

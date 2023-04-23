@@ -2,13 +2,12 @@ package de.oliver.fancyreferrals;
 
 import de.oliver.fancylib.MessageHelper;
 import de.oliver.fancylib.databases.Database;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ReferralManager {
 
@@ -38,7 +37,7 @@ public class ReferralManager {
         }
     }
 
-    public static void refer(Player referrer, Player referred){
+    public static void refer(Player referrer, OfflinePlayer referred){
         if (referrals.containsKey(referrer.getUniqueId())) {
             MessageHelper.error(referrer, "You cannot do this again");
             return;
