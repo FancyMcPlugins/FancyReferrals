@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.FancyMcPlugins:FancyLib:main-SNAPSHOT")
+    implementation("com.github.FancyMcPlugins:FancyLib:30294ec6ea")
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 }
 
