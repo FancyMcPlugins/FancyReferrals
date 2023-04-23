@@ -22,6 +22,8 @@ public class ReferralManager {
             return;
         }
 
+        referrals.clear();
+
         try {
             while (res.next()) {
                 UUID referrer = UUID.fromString(res.getString("referrer"));
