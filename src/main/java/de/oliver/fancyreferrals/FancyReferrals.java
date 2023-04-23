@@ -4,6 +4,7 @@ import de.oliver.fancylib.MessageHelper;
 import de.oliver.fancylib.databases.Database;
 import de.oliver.fancylib.databases.MySqlDatabase;
 import de.oliver.fancyreferrals.commands.FancyReferralsCMD;
+import de.oliver.fancyreferrals.commands.ReferralCMD;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,12 +35,27 @@ public class FancyReferrals extends JavaPlugin {
         }
 
         if (!database.connect()) {
-            getLogger().warning("Could not connect to database.");
+            getLogger().warning("Could not connect to database");
             pluginManager.disablePlugin(instance);
             return;
+        } else {
+            boolean success = database.executeNonQuery("CREATE TABLE IF NOT EXISTS referrals(" +
+                    "referrer VARCHAR(255)," +
+                    "referred VARCHAR(255)," +
+                    "timestamp LONG," +
+                    "PRIMARY KEY(referrer, referred)" +
+                    ")");
+            if(!success){
+                getLogger().warning("Could not create the 'referrals' table");
+                pluginManager.disablePlugin(instance);
+                return;
+            }
         }
 
+        ReferralManager.loadFromDatabase();
+
         getCommand("FancyReferrals").setExecutor(new FancyReferralsCMD());
+        getCommand("Referral").setExecutor(new ReferralCMD());
     }
 
     @Override
