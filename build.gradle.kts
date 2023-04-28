@@ -12,11 +12,14 @@ repositories {
     mavenCentral()
     maven("https://jitpack.io")
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.alessiodp.com/releases/")
 }
 
 dependencies {
-    implementation("com.github.FancyMcPlugins:FancyLib:30294ec6ea")
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+
+    implementation("net.byteflux:libby-bukkit:1.2.0")
+    compileOnly("com.github.FancyMcPlugins:FancyLib:30294ec6ea")
 }
 
 tasks {
