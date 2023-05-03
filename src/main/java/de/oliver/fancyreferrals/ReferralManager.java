@@ -1,8 +1,8 @@
 package de.oliver.fancyreferrals;
 
 import de.oliver.fancylib.MessageHelper;
+import de.oliver.fancylib.UUIDFetcher;
 import de.oliver.fancylib.databases.Database;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -37,23 +37,30 @@ public class ReferralManager {
         }
     }
 
-    public static void refer(Player referrer, OfflinePlayer referred){
+    public static void refer(Player referrer, String referred){
         if (referrals.containsKey(referrer.getUniqueId())) {
             MessageHelper.error(referrer, "You cannot do this again");
             return;
         }
 
-        if(referrer.getName().equals(referred.getName())){
+        if(referrer.getName().equalsIgnoreCase(referred)){
             MessageHelper.error(referrer, "You cannot refer yourself");
             return;
         }
 
-        referrals.put(referrer.getUniqueId(), referred.getUniqueId());
+        UUID referredUUID = UUIDFetcher.getUUID(referred);
+
+        if(referredUUID == null){
+            MessageHelper.error(referrer, "Could not find player: '" + referred + "'");
+            return;
+        }
+
+        referrals.put(referrer.getUniqueId(), referredUUID);
 
         long timestamp = System.currentTimeMillis();
 
         Database database = FancyReferrals.getInstance().getDatabase();
-        boolean success = database.executeNonQuery("INSERT INTO referrals(referrer, referred, timestamp) VALUES('" + referrer.getUniqueId() + "', '" + referred.getUniqueId() + "', " + timestamp + ")");
+        boolean success = database.executeNonQuery("INSERT INTO referrals(referrer, referred, timestamp) VALUES('" + referrer.getUniqueId() + "', '" + referredUUID + "', " + timestamp + ")");
         if(!success){
             FancyReferrals.getInstance().getLogger().warning("Could not insert a new referral into database");
             MessageHelper.warning(referrer, "Something went wrong");

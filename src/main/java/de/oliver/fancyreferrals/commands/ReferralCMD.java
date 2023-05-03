@@ -1,11 +1,11 @@
 package de.oliver.fancyreferrals.commands;
 
 import de.oliver.fancylib.MessageHelper;
+import de.oliver.fancylib.UUIDFetcher;
 import de.oliver.fancylib.databases.Database;
 import de.oliver.fancyreferrals.FancyReferrals;
 import de.oliver.fancyreferrals.ReferralManager;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,9 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -64,8 +62,9 @@ public class ReferralCMD implements CommandExecutor, TabCompleter {
                 while (res.next()) {
                     i++;
                     UUID uuid = UUID.fromString(res.getString("referred"));
+                    String name = UUIDFetcher.getName(uuid);
                     int count = res.getInt("count");
-                    MessageHelper.info(p, "#" + i + " - " + uuid.toString() + " (" + count + ")");
+                    MessageHelper.info(p, "#" + i + " - " + name + " (" + count + ")");
                 }
             }catch (SQLException e){
                 MessageHelper.error(p, "Could not fetch data");
@@ -75,13 +74,7 @@ public class ReferralCMD implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        OfflinePlayer t = Bukkit.getOfflinePlayer(args[0]);
-        if(t == null){
-            MessageHelper.error(p, "The player '" + args[0] + "' is not online");
-            return false;
-        }
-
-        ReferralManager.refer(p, t);
+        ReferralManager.refer(p, args[0]);
 
         return false;
     }

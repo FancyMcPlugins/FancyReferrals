@@ -19,7 +19,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     implementation("net.byteflux:libby-bukkit:1.2.0")
-    compileOnly("com.github.FancyMcPlugins:FancyLib:30294ec6ea")
+    implementation("com.github.FancyMcPlugins:FancyLib:df4bc575eb")
 }
 
 tasks {
@@ -36,6 +36,10 @@ tasks {
 
     runServer {
         minecraftVersion("1.19.4")
+    }
+
+    assemble{
+        dependsOn(shadowJar)
     }
 
     compileJava {
