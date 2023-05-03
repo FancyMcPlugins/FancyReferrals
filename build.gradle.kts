@@ -38,6 +38,10 @@ tasks {
         minecraftVersion("1.19.4")
     }
 
+    shadowJar{
+        archiveClassifier.set("")
+    }
+
     assemble{
         dependsOn(shadowJar)
     }
