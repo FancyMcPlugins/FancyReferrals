@@ -1,5 +1,6 @@
 package de.oliver.fancyreferrals;
 
+import de.oliver.fancylib.FancyLib;
 import de.oliver.fancylib.MessageHelper;
 import de.oliver.fancylib.databases.Database;
 import de.oliver.fancyreferrals.commands.FancyReferralsCMD;
@@ -24,7 +25,7 @@ public class FancyReferrals extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        MessageHelper.pluginName = getDescription().getName();
+        FancyLib.setPlugin(instance);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -66,17 +67,26 @@ public class FancyReferrals extends JavaPlugin {
     }
 
     private void loadDependencies(){
-        getLogger().info("Loading FancyLib");
         BukkitLibraryManager paperLibraryManager = new BukkitLibraryManager(instance);
-
-        Library fancyLib = Library.builder()
-                .groupId("com{}github{}FancyMcPlugins")
-                .artifactId("FancyLib")
-                .version("30294ec6ea")
-                .build();
-
         paperLibraryManager.addJitPack();
-        paperLibraryManager.loadLibrary(fancyLib);
+
+        boolean hasFancyLib;
+        try{
+            Class.forName("de.oliver.fancylib.FancyLib");
+            hasFancyLib = true;
+        } catch (ClassNotFoundException e){
+            hasFancyLib = false;
+        }
+
+        if(!hasFancyLib){
+            getLogger().info("Loading FancyLib");
+            Library fancyLib = Library.builder()
+                    .groupId("com{}github{}FancyMcPlugins")
+                    .artifactId("FancyLib")
+                    .version("25458c9930")
+                    .build();
+            paperLibraryManager.loadLibrary(fancyLib);
+        }
     }
 
     public FancyReferralsConfig getFancyReferralsConfig(){

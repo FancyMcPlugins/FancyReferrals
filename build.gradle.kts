@@ -19,7 +19,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     implementation("net.byteflux:libby-bukkit:1.2.0")
-    implementation("com.github.FancyMcPlugins:FancyLib:df4bc575eb")
+    compileOnly("com.github.FancyMcPlugins:FancyLib:25458c9930")
 }
 
 tasks {
