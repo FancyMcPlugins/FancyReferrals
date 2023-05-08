@@ -36,7 +36,7 @@ public class FancyReferralsCMD implements CommandExecutor, TabCompleter {
             MessageHelper.info(sender, "FancyReferrals version: " + currentVersion);
             return true;
         } else {
-            MessageHelper.info(sender, "/FancyReferrals <reload | config>");
+            MessageHelper.info(sender, "/FancyReferrals <version | reload>");
         }
 
         return false;
