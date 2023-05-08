@@ -12,6 +12,7 @@ import java.util.*;
 public class ReferralManager {
 
     private static final Map<UUID, UUID> referrals = new HashMap<>();
+    private static List<Map.Entry<String, Integer>> topPlayersCache = new ArrayList<>();
 
     public static void loadFromDatabase(){
         Database database = FancyReferrals.getInstance().getDatabase();
@@ -35,6 +36,42 @@ public class ReferralManager {
             e.printStackTrace();
             return;
         }
+    }
+
+    public static void refreshTopPlayerCache(){
+        topPlayersCache = new ArrayList<>();
+
+        Database database = FancyReferrals.getInstance().getDatabase();
+        ResultSet res = database.executeQuery("SELECT referred, COUNT(*) as count FROM referrals ORDER BY count DESC LIMIT 10");
+        if(res == null){
+            FancyReferrals.getInstance().getLogger().warning("Could not fetch data");
+            return;
+        }
+
+        try {
+            while (res.next()) {
+                UUID uuid = UUID.fromString(res.getString("referred"));
+                String name = UUIDFetcher.getName(uuid);
+                int count = res.getInt("count");
+
+                topPlayersCache.add(Map.entry(name, count));
+            }
+        }catch (SQLException e){
+            FancyReferrals.getInstance().getLogger().warning("Could not fetch data");
+            return;
+        }
+
+
+    }
+
+    public static Map.Entry<String, Integer> getTopPlayer(int place){
+        place -= 1;
+
+        if(place >= topPlayersCache.size()){
+            return Map.entry("N/A", 0);
+        }
+
+        return topPlayersCache.get(place);
     }
 
     public static void refer(Player referrer, String referred){

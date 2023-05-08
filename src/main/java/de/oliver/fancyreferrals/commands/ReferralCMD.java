@@ -1,9 +1,6 @@
 package de.oliver.fancyreferrals.commands;
 
 import de.oliver.fancylib.MessageHelper;
-import de.oliver.fancylib.UUIDFetcher;
-import de.oliver.fancylib.databases.Database;
-import de.oliver.fancyreferrals.FancyReferrals;
 import de.oliver.fancyreferrals.ReferralManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,10 +11,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class ReferralCMD implements CommandExecutor, TabCompleter {
@@ -50,25 +45,10 @@ public class ReferralCMD implements CommandExecutor, TabCompleter {
         }
 
         if(args[0].equalsIgnoreCase("top")){
-            Database database = FancyReferrals.getInstance().getDatabase();
-            ResultSet res = database.executeQuery("SELECT referred, COUNT(*) as count FROM referrals ORDER BY count DESC LIMIT 10");
-            if(res == null){
-                MessageHelper.error(p, "Could not fetch data");
-                return false;
-            }
 
-            try {
-                int i = 0;
-                while (res.next()) {
-                    i++;
-                    UUID uuid = UUID.fromString(res.getString("referred"));
-                    String name = UUIDFetcher.getName(uuid);
-                    int count = res.getInt("count");
-                    MessageHelper.info(p, "#" + i + " - " + name + " (" + count + ")");
-                }
-            }catch (SQLException e){
-                MessageHelper.error(p, "Could not fetch data");
-                return false;
+            for (int i = 1; i <= 10; i++) {
+                Map.Entry<String, Integer> entry = ReferralManager.getTopPlayer(i);
+                MessageHelper.info(p, "#" + i + " - " + entry.getKey() + " (" + entry.getValue() + ")");
             }
 
             return true;

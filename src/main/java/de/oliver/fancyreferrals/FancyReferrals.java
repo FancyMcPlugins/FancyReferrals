@@ -1,10 +1,10 @@
 package de.oliver.fancyreferrals;
 
 import de.oliver.fancylib.FancyLib;
-import de.oliver.fancylib.MessageHelper;
 import de.oliver.fancylib.databases.Database;
 import de.oliver.fancyreferrals.commands.FancyReferralsCMD;
 import de.oliver.fancyreferrals.commands.ReferralCMD;
+import de.oliver.fancyreferrals.placeholders.FancyReferralsPlaceholderExpansion;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bukkit.Bukkit;
@@ -16,6 +16,7 @@ public class FancyReferrals extends JavaPlugin {
     private static FancyReferrals instance;
     private FancyReferralsConfig config;
     private Database database;
+    private boolean usingPlaceholderAPI;
 
     public FancyReferrals() {
         instance = this;
@@ -28,6 +29,8 @@ public class FancyReferrals extends JavaPlugin {
         FancyLib.setPlugin(instance);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
+
+        usingPlaceholderAPI = pluginManager.isPluginEnabled("PlaceholderAPI");
 
         config.reload();
         database = config.getDatabase();
@@ -56,9 +59,17 @@ public class FancyReferrals extends JavaPlugin {
         }
 
         ReferralManager.loadFromDatabase();
+        ReferralManager.refreshTopPlayerCache();
+
+        int refreshTopPlayersInterval = config.getRefreshTopPlayersInterval();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(instance, ReferralManager::refreshTopPlayerCache, 20L*60*refreshTopPlayersInterval, 20L*60*refreshTopPlayersInterval);
 
         getCommand("FancyReferrals").setExecutor(new FancyReferralsCMD());
         getCommand("Referral").setExecutor(new ReferralCMD());
+
+        if(usingPlaceholderAPI){
+            new FancyReferralsPlaceholderExpansion().register();
+        }
     }
 
     @Override

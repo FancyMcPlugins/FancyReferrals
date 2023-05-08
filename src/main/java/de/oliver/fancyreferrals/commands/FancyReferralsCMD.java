@@ -18,7 +18,7 @@ public class FancyReferralsCMD implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length == 1){
-            return Arrays.asList("reload", "version");
+            return Arrays.asList("reload", "refresh", "version");
         }
         return null;
     }
@@ -35,8 +35,11 @@ public class FancyReferralsCMD implements CommandExecutor, TabCompleter {
             String currentVersion = FancyReferrals.getInstance().getDescription().getVersion();
             MessageHelper.info(sender, "FancyReferrals version: " + currentVersion);
             return true;
+        } else if(args.length >= 1 && args[0].equalsIgnoreCase("refresh")){
+            ReferralManager.refreshTopPlayerCache();
+            MessageHelper.success(sender, "Refreshed the top 10 players list");
         } else {
-            MessageHelper.info(sender, "/FancyReferrals <version | reload>");
+            MessageHelper.info(sender, "/FancyReferrals <version | reload | refresh>");
         }
 
         return false;

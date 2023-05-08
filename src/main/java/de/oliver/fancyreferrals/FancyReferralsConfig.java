@@ -1,5 +1,6 @@
 package de.oliver.fancyreferrals;
 
+import de.oliver.fancylib.ConfigHelper;
 import de.oliver.fancylib.databases.Database;
 import de.oliver.fancylib.databases.MySqlDatabase;
 import de.oliver.fancylib.databases.SqliteDatabase;
@@ -14,23 +15,26 @@ public class FancyReferralsConfig {
     private String dbUsername;
     private String dbPassword;
     private String dbFile;
+    private int refreshTopPlayersInterval;
 
     public void reload(){
         FancyReferrals.getInstance().reloadConfig();
         FileConfiguration config = FancyReferrals.getInstance().getConfig();
 
-        dbType = DatabaseType.getByIdentifier((String) getOrDefault(config, "database.type", "sqlite"));
+        dbType = DatabaseType.getByIdentifier((String) ConfigHelper.getOrDefault(config, "database.type", "sqlite"));
         if(dbType == null){
             FancyReferrals.getInstance().getLogger().warning("Invalid database type provided in config");
         }
 
-        dbHost = (String) getOrDefault(config, "database.mysql.host", "localhost");
-        dbPort = (String) getOrDefault(config, "database.mysql.port", "3306");
-        dbDatabase = (String) getOrDefault(config, "database.mysql.database", "fancyreferrals");
-        dbUsername = (String) getOrDefault(config, "database.mysql.username", "root");
-        dbPassword = (String) getOrDefault(config, "database.mysql.password", "");
-        dbFile = (String) getOrDefault(config, "database.sqlite.file_path", "database.db");
+        dbHost = (String) ConfigHelper.getOrDefault(config, "database.mysql.host", "localhost");
+        dbPort = (String) ConfigHelper.getOrDefault(config, "database.mysql.port", "3306");
+        dbDatabase = (String) ConfigHelper.getOrDefault(config, "database.mysql.database", "fancyreferrals");
+        dbUsername = (String) ConfigHelper.getOrDefault(config, "database.mysql.username", "root");
+        dbPassword = (String) ConfigHelper.getOrDefault(config, "database.mysql.password", "");
+        dbFile = (String) ConfigHelper.getOrDefault(config, "database.sqlite.file_path", "database.db");
         dbFile = "plugins/FancyReferrals/" + dbFile;
+
+        refreshTopPlayersInterval = (Integer) ConfigHelper.getOrDefault(config, "refresh_top_players_interval", 30);
 
         FancyReferrals.getInstance().saveConfig();
     }
@@ -50,13 +54,8 @@ public class FancyReferralsConfig {
         return db;
     }
 
-    public static Object getOrDefault(FileConfiguration config, String path, Object defaultVal){
-        if(!config.contains(path)){
-            config.set(path, defaultVal);
-            return defaultVal;
-        }
-
-        return config.get(path);
+    public int getRefreshTopPlayersInterval() {
+        return refreshTopPlayersInterval;
     }
 
     enum DatabaseType{
