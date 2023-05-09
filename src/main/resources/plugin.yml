@@ -8,6 +8,8 @@ softdepend:
   - PlaceholderAPI
 commands:
   FancyReferrals:
+    permission: fancyreferrals.admin
   Referral:
+    permission: fancyreferrals.referral
     aliases:
       - ref
