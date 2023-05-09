@@ -26,8 +26,15 @@ public class ReferralManager {
 
         try {
             while (res.next()) {
-                UUID referrer = UUID.fromString(res.getString("referrer"));
-                UUID referred = UUID.fromString(res.getString("referred"));
+                String referrerName = res.getString("referrer");
+                String referredName = res.getString("referred");
+
+                if(referrerName == null || referrerName.length() == 0 || referredName == null || referredName.length() == 0){
+                    continue;
+                }
+
+                UUID referrer = UUID.fromString(referrerName);
+                UUID referred = UUID.fromString(referredName);
                 long timestamp = res.getLong("timestamp"); // TODO: also cache this
 
                 referrals.put(referrer, referred);
@@ -50,7 +57,12 @@ public class ReferralManager {
 
         try {
             while (res.next()) {
-                UUID uuid = UUID.fromString(res.getString("referred"));
+                String referred = res.getString("referred");
+                if(referred == null || referred.length() == 0){
+                    continue;
+                }
+
+                UUID uuid = UUID.fromString(referred);
                 String name = UUIDFetcher.getName(uuid);
                 int count = res.getInt("count");
 
