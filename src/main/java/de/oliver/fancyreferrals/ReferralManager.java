@@ -115,6 +115,8 @@ public class ReferralManager {
             MessageHelper.warning(referrer, "Something went wrong");
             return;
         }
+
+        MessageHelper.success(referrer, "Successfully registered referral");
     }
 
 }
