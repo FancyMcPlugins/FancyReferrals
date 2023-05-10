@@ -116,7 +116,11 @@ public class ReferralManager {
             return;
         }
 
-        MessageHelper.success(referrer, "Successfully registered referral");
+        String successMessage = FancyReferrals.getInstance().getFancyReferralsConfig().getSuccessMessage()
+                .replace("%referrer%", referrer.getName())
+                .replace("%referred%", referred);
+
+        MessageHelper.success(referrer, successMessage);
     }
 
 }

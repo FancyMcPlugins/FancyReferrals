@@ -16,6 +16,7 @@ public class FancyReferralsConfig {
     private String dbPassword;
     private String dbFile;
     private int refreshTopPlayersInterval;
+    private String successMessage;
 
     public void reload(){
         FancyReferrals.getInstance().reloadConfig();
@@ -35,6 +36,7 @@ public class FancyReferralsConfig {
         dbFile = "plugins/FancyReferrals/" + dbFile;
 
         refreshTopPlayersInterval = (Integer) ConfigHelper.getOrDefault(config, "refresh_top_players_interval", 30);
+        successMessage = (String) ConfigHelper.getOrDefault(config, "successMessage", "Successfully registered referral");
 
         FancyReferrals.getInstance().saveConfig();
     }
@@ -56,6 +58,10 @@ public class FancyReferralsConfig {
 
     public int getRefreshTopPlayersInterval() {
         return refreshTopPlayersInterval;
+    }
+
+    public String getSuccessMessage() {
+        return successMessage;
     }
 
     enum DatabaseType{
