@@ -48,6 +48,9 @@ public class ReferralCMD implements CommandExecutor, TabCompleter {
 
             for (int i = 1; i <= 10; i++) {
                 Map.Entry<String, Integer> entry = ReferralManager.getTopPlayer(i);
+                if(entry.getKey().equalsIgnoreCase("N/A"))
+                    continue;
+
                 MessageHelper.info(p, "#" + i + " - " + entry.getKey() + " (" + entry.getValue() + ")");
             }
 

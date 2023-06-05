@@ -49,7 +49,7 @@ public class ReferralManager {
         topPlayersCache = new ArrayList<>();
 
         Database database = FancyReferrals.getInstance().getDatabase();
-        ResultSet res = database.executeQuery("SELECT referred, COUNT(*) as count FROM referrals ORDER BY count DESC LIMIT 10");
+        ResultSet res = database.executeQuery("SELECT referred, COUNT(*) as count FROM referrals GROUP BY referred ORDER BY count DESC LIMIT 10");
         if(res == null){
             FancyReferrals.getInstance().getLogger().warning("Could not fetch data");
             return;
@@ -68,12 +68,11 @@ public class ReferralManager {
 
                 topPlayersCache.add(Map.entry(name, count));
             }
+
         }catch (SQLException e){
             FancyReferrals.getInstance().getLogger().warning("Could not fetch data");
             return;
         }
-
-
     }
 
     public static Map.Entry<String, Integer> getTopPlayer(int place){

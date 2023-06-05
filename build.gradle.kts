@@ -10,9 +10,8 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.alessiodp.com/releases/")
+    maven("https://repo.fancyplugins.de/releases")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
@@ -20,8 +19,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.3")
 
-    implementation("net.byteflux:libby-bukkit:1.2.0")
-    compileOnly("com.github.FancyMcPlugins:FancyLib:25458c9930")
+    implementation("de.oliver:FancyLib:1.0.2")
 }
 
 tasks {
